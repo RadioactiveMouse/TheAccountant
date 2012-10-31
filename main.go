@@ -19,6 +19,10 @@ type Record struct {
 	Reference string
 }
 
+func (r Record) String() string {
+	return fmt.Sprintf("Date : %v\nSort-Code : %+v\nAccount Number : %+v\nValue : £%0.2f\nPaymentType : %+v\nReference : %+v \n",r.Date,r.SortCode,r.AccountNumber,r.Value,r.Type,r.Reference)
+}
+
 func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Served Home")
 }
@@ -61,7 +65,7 @@ func scanDir() {
 				Reference : item[5],
 			}
 			records[i-1] = record
-			log.Print(record)
+			fmt.Print(record)
 		} else {
 			log.Println(err)
 		}

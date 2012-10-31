@@ -6,8 +6,18 @@ import (
 	"net/http"
 	"os"
 	"encoding/csv"
+	"strconv"
+	"strings"
 )
 
+type Record struct {
+	Date string
+	SortCode string
+	AccountNumber string
+	Value float64
+	Type string
+	Reference string
+}
 
 func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Served Home")
@@ -35,7 +45,27 @@ func scanDir() {
 	if err != nil {
 		log.Fatal("Error during csv read")
 	}
-	log.Print(data)
+	records := make([]Record, len(data))
+	for i, item  := range data {
+		_, err := strconv.ParseFloat(item[3], 32)
+		if err == nil {
+			details := strings.Split(item[2], " ")
+			value, err := strconv.ParseFloat(item[3],32)
+			if err != nil { log.Println(err) }
+			record := Record{
+				Date : item[1],
+				SortCode : details[0],
+				AccountNumber : details[1],
+				Value : value,
+				Type : item[4],
+				Reference : item[5],
+			}
+			records[i-1] = record
+			log.Print(record)
+		} else {
+			log.Println(err)
+		}
+	}
 }
 
 func main() {

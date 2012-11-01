@@ -32,10 +32,10 @@ func importData(w http.ResponseWriter, r *http.Request) {
 	log.Println("Import endpoint")
 }
 
-//my account
+//endpoint to export data out of the system
 func export(w http.ResponseWriter, r *http.Request) {
 	log.Print("Export endpoint triggered")
-	res, err := scanDir() // change this so it returns the data for vanilla printing
+	res, err := scanFile("data.csv")
 	if err != nil {
 		log.Println(err)
 	} else {
@@ -43,9 +43,17 @@ func export(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// scanDir should examine the data directory and add the data to the UI
-func scanDir() ([]Record, error) {
-	file, err := os.Open("data.csv")
+// endpoint to show the x last transactions
+func latestTransaction(w http.ResponseWriter, r *http.Request) {
+	log.Println("Latest transactions endpoint")
+	fmt.Fprintf(w,"Latest Transactions")
+	fmt.Fprintf(w,"#########")
+	// loop through the last 5 transactions
+}
+
+// scanFile should examine the file and add the data to the UI
+func scanFile(filename string) ([]Record, error) {
+	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatal("Unable to find the data.")
 	}
@@ -83,6 +91,7 @@ func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/import", importData)
 	http.HandleFunc("/export", export)
+	http.HandleFunc("/latest", latestTransaction)
 
 	log.Println("The Accountant started on localhost:8000/")
 	err := http.ListenAndServe("localhost:8000", nil)

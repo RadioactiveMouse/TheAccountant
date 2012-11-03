@@ -21,7 +21,7 @@ type Record struct {
 }
 
 func (r Record) String() string {
-	return fmt.Sprintf("Date : %v\nSort-Code : %v\nAccount Number : %v\nValue : £%0.2f\nPaymentType : %v\nReference : %v\n", r.Date, r.SortCode, r.AccountNumber, r.Value, r.Type, r.Reference)
+	return fmt.Sprintf("Date : %v\nSort-Code : %v\nAccount Number : %v\nValue : £%0.2f\nPaymentType : %v\nReference : %v", r.Date, r.SortCode, r.AccountNumber, r.Value, r.Type, r.Reference)
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +39,9 @@ func export(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	} else {
-		fmt.Fprintln(w, res)
+		for _ , record := range res {
+			fmt.Fprintln(w,record)
+		}
 	}
 }
 
@@ -87,7 +89,6 @@ func scanFile(filename string) ([]Record, error) {
 }
 
 func main() {
-	// do some parsing of the main files
 	http.HandleFunc("/", home)
 	http.HandleFunc("/import", importData)
 	http.HandleFunc("/export", export)
